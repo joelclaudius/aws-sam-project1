@@ -1,0 +1,29 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: "Serverless application for downloading documents from Gutenberg and uploading them to Stuvia"
+
+Resources:
+  GutenbergBucket:
+    Type: AWS::S3::Bucket
+
+  DownloadDocumentsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: DownloadDocumentsFunction
+      Handler: download_documents.lambda_handler
+      Runtime: python3.12
+      Environment:
+        Variables:
+          BUCKET_NAME: !Ref GutenbergBucket
+      CodeUri: ./download_documents.zip
+
+  UploadToStuviaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: UploadToStuviaFunction
+      Handler: upload_to_stuvia.lambda_handler
+      Runtime: python3.12
+      Environment:
+        Variables:
+          BUCKET_NAME: !Ref GutenbergBucket
+      CodeUri: ./upload_to_stuvia.zip
